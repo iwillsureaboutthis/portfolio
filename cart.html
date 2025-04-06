@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart | AnimeWear</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    
+    <div class="glass-container">
+        <nav class="navbar">
+            <div class="logo">AnimeWear by iwillsureaoutthis</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="collections.html">Collections</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="cart-icon">
+                <a href="cart.html" class="active">
+                    <span class="material-icons">Cart</span>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="cart-header">
+                <h1>Your Shopping Cart</h1>
+                <p>Review your items before checkout</p>
+            </section>
+
+            <section class="cart-content">
+                <div class="cart-items">
+                    <div class="cart-empty-message">
+                        <p>Your cart is currently empty.</p>
+                        <a href="collections.html" class="continue-shopping">Continue Shopping</a>
+                    </div>
+                    
+                    <!-- Cart items will be dynamically added here via JavaScript -->
+                    <div class="cart-item-container" style="display: none;">
+                        <!-- Example cart item (hidden by default, will be shown via JS) -->
+                        <div class="cart-item">
+                            <div class="cart-item-image"></div>
+                            <div class="cart-item-details">
+                                <h3>Akira Jacket</h3>
+                                <p class="cart-item-price">$89.99</p>
+                                <div class="cart-item-quantity">
+                                    <button class="quantity-btn minus">-</button>
+                                    <input type="number" value="1" min="1" max="10">
+                                    <button class="quantity-btn plus">+</button>
+                                </div>
+                            </div>
+                            <button class="remove-item">×</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <h2>Order Summary</h2>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span class="subtotal">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span class="shipping">$0.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span class="tax">$0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total</span>
+                        <span class="total-price">$0.00</span>
+                    </div>
+                    <button class="checkout-button" disabled>Proceed to Checkout</button>
+                    <a href="collections.html" class="continue-shopping">Continue Shopping</a>
+                </div>
+            </section>
+
+            <section class="recommended-products">
+                <h2>You Might Also Like</h2>
+                <div class="product-grid">
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <h3>Naruto Hoodie</h3>
+                        <p>$59.99</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <h3>One Piece Tee</h3>
+                        <p>$34.99</p>
+                        <button>Add to Cart</button>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image"></div>
+                        <h3>Attack on Titan Cap</h3>
+                        <p>$24.99</p>
+                        <button>Add to Cart</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">AnimeWear by iwillsureaboutthis</div>
+                <div class="footer-links">
+                    <ul>
+                        
+                        
+                        
+                        
+                    </ul>
+                </div>
+                <div class="social-icons">
+                   
+                    <a href="https://www.instagram.com/iwillsureaboutthis/#" class="social-icon"><img src="logo/logoinstagram-icon.png" alt="Instagram" class="social-icon-img" style="width: 60px; height: 60px; border-radius: 100%; object-fit: cover;"></a>
+                   
+                </div>
+            </div>
+            <div class="copyright">
+              
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.7.1/dist/gsap.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // For demo purposes, let's add functionality to the "Add to Cart" buttons
+            const addToCartButtons = document.querySelectorAll('.product-card button');
+            const cartCount = document.querySelector('.cart-count');
+            const cartEmptyMessage = document.querySelector('.cart-empty-message');
+            const cartItemContainer = document.querySelector('.cart-item-container');
+            const checkoutButton = document.querySelector('.checkout-button');
+            const subtotalElement = document.querySelector('.subtotal');
+            const shippingElement = document.querySelector('.shipping');
+            const taxElement = document.querySelector('.tax');
+            const totalElement = document.querySelector('.total-price');
+            
+            // Initialize cart
+            let cartItems = [];
+            
+            // Load cart from localStorage if available
+            if (localStorage.getItem('cartItems')) {
+                cartItems = JSON.parse(localStorage.getItem('cartItems'));
+                updateCartDisplay();
+            }
+            
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const productCard = button.closest('.product-card');
+                    const productName = productCard.querySelector('h3').textContent;
+                    const productPrice = parseFloat(productCard.querySelector('p').textContent.replace('$', ''));
+                    
+                    // Add item to cart
+                    cartItems.push({
+                        name: productName,
+                        price: productPrice,
+                        quantity: 1
+                    });
+                    
+                    // Save to localStorage
+                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                    
+                    // Update cart display
+                    updateCartDisplay();
+                    
+                    // Animation for button
+                    button.textContent = 'Added!';
+                    button.style.backgroundColor = '#4CAF50';
+                    
+                    setTimeout(() => {
+                        button.textContent = 'Add to Cart';
+                        button.style.backgroundColor = '';
+                    }, 1500);
+                });
+            });
+            
+            function updateCartDisplay() {
+                // Update cart count
+                cartCount.textContent = cartItems.length;
+                
+                // Show/hide empty cart message
+                if (cartItems.length === 0) {
+                    cartEmptyMessage.style.display = 'block';
+                    cartItemContainer.style.display = 'none';
+                    checkoutButton.disabled = true;
+                } else {
+                    cartEmptyMessage.style.display = 'none';
+                    cartItemContainer.style.display = 'block';
+                    checkoutButton.disabled = false;
+                    
+                    // Clear existing items
+                    cartItemContainer.innerHTML = '';
+                    
+                    // Add each item to the cart
+                    cartItems.forEach((item, index) => {
+                        const cartItemElement = document.createElement('div');
+                        cartItemElement.classList.add('cart-item');
+                        cartItemElement.innerHTML = `
+                            <div class="cart-item-image"></div>
+                            <div class="cart-item-details">
+                                <h3>${item.name}</h3>
+                                <p class="cart-item-price">$${item.price.toFixed(2)}</p>
+                                <div class="cart-item-quantity">
+                                    <button class="quantity-btn minus" data-index="${index}">-</button>
+                                    <input type="number" value="${item.quantity}" min="1" max="10" data-index="${index}">
+                                    <button class="quantity-btn plus" data-index="${index}">+</button>
+                                </div>
+                            </div>
+                            <button class="remove-item" data-index="${index}">×</button>
+                        `;
+                        cartItemContainer.appendChild(cartItemElement);
+                    });
+                    
+                    // Add event listeners to new elements
+                    addCartItemEventListeners();
+                }
+                
+                // Update order summary
+                updateOrderSummary();
+            }
+            
+            function addCartItemEventListeners() {
+                // Quantity buttons
+                document.querySelectorAll('.quantity-btn.minus').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const index = button.getAttribute('data-index');
+                        if (cartItems[index].quantity > 1) {
+                            cartItems[index].quantity--;
+                            updateCartDisplay();
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.quantity-btn.plus').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const index = button.getAttribute('data-index');
+                        if (cartItems[index].quantity < 10) {
+                            cartItems[index].quantity++;
+                            updateCartDisplay();
+                        }
+                    });
+                });
+                
+                // Quantity input
+                document.querySelectorAll('.cart-item-quantity input').forEach(input => {
+                    input.addEventListener('change', () => {
+                        const index = input.getAttribute('data-index');
+                        const value = parseInt(input.value);
+                        if (value >= 1 && value <= 10) {
+                            cartItems[index].quantity = value;
+                        } else if (value < 1) {
+                            cartItems[index].quantity = 1;
+                            input.value = 1;
+                        } else {
+                            cartItems[index].quantity = 10;
+                            input.value = 10;
+                        }
+                        updateOrderSummary();
+                        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                    });
+                });
+                
+                // Remove buttons
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', () => {
+                        const index = button.getAttribute('data-index');
+                        cartItems.splice(index, 1);
+                        updateCartDisplay();
+                        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                    });
+                });
+            }
+            
+            function updateOrderSummary() {
+                // Calculate subtotal
+                const subtotal = cartItems.reduce((total, item) => {
+                    return total + (item.price * item.quantity);
+                }, 0);
+                
+                // Calculate shipping (free over $50)
+                const shipping = subtotal > 50 ? 0 : 5.99;
+                
+                // Calculate tax (8%)
+                const tax = subtotal * 0.08;
+                
+                // Calculate total
+                const total = subtotal + shipping + tax;
+                
+                // Update display
+                subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+                shippingElement.textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+                taxElement.textContent = `$${tax.toFixed(2)}`;
+                totalElement.textContent = `$${total.toFixed(2)}`;
+                
+                // Save to localStorage
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            }
+            
+            // Checkout button
+            checkoutButton.addEventListener('click', () => {
+                alert('Checkout functionality would be implemented here in a real application.');
+            });
+        });
+    </script>
+</body>
+</html>
